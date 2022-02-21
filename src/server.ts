@@ -1,12 +1,18 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
-
+import express, { Application } from 'express';
+import dotenv from 'dotenv';
+import router from './routes/wordUpRoutes'
+import { errorHandler } from './middleware/errorMiddleware'
+dotenv.config();
+const port = process.env.PORT || 8080;
 const app: Application = express();
 
-const add = (a: number, b: number): number => a + b;
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  console.log(add(5, 5));
-  res.send('Hello');
-});
 
+// middleware 
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
-app.listen(8080, () => console.log('Server running'));
+app.use('/api/word', router);
+
+app.use(errorHandler);
+
+app.listen(port, () => console.log(`Server running on ${port}`));
